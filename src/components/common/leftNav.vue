@@ -28,10 +28,7 @@
 
 <script>
   export default {
-    name: 'leftNav',
-    data() {
-      return {}
-    }
+    name: 'leftNav'
   }
 </script>
 <style>

@@ -10,9 +10,7 @@
 
 <script>
   import leftNav from '@/components/common/leftNav'
-
   export default {
-
     components: {
       leftNav
     }
