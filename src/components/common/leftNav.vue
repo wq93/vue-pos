@@ -2,11 +2,11 @@
   <div class="left-nav">
     <ul>
       <li>
-        <i class="icon iconfont icon-gonggao"></i>
+        <i class="icon iconfont icon-feiyongbaohan"></i>
         <div>收银</div>
       </li>
       <li>
-        <i class="icon iconfont icon-jujia"></i>
+        <i class="icon iconfont icon-dianpu"></i>
         <div>店铺</div>
       </li>
 
@@ -15,11 +15,11 @@
         <div>商品</div>
       </li>
       <li>
-        <i class="icon iconfont icon-kefuyouxian"></i>
+        <i class="icon iconfont icon-huiyuanqia"></i>
         <div>会员</div>
       </li>
       <li>
-        <i class="icon iconfont icon-diantileimu"></i>
+        <i class="icon iconfont icon-shezhi"></i>
         <div>统计</div>
       </li>
     </ul>

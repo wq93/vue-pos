@@ -17,9 +17,11 @@
               </el-table-column>
             </el-table>
             <div class="div-btn">
-              <el-button type="warning" size="small">挂单</el-button>
-              <el-button type="danger" size="small">删除</el-button>
-              <el-button type="success" size="small">结账</el-button>
+              <div class="order-btn">
+                <el-button type="warning" size="small">挂单</el-button>
+                <el-button type="danger" size="small">删除</el-button>
+                <el-button type="success" size="small">结账</el-button>
+              </div>
             </div>
           </el-tab-pane>
           <el-tab-pane label="挂单">
@@ -32,7 +34,66 @@
       </el-col>
       <!--商品展示-->
       <el-col :span="17">
-        我是产品栏
+        <div class="often-goods">
+          <div class="title">常用商品</div>
+          <div class="often-goods-list">
+            <ul>
+              <li v-for="item in oftenGoods">
+                <span>{{item.goodsName}}</span>
+                <span class="o-price">￥{{item.price}}元</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="goods-type">
+          <el-tabs>
+            <el-tab-pane label="汉堡">
+              <ul class='cookList'>
+                <li v-for="goods in type0Goods">
+                  <span class="foodImg">
+                      <img :src="goods.goodsImg" width="100%">
+                  </span>
+                  <span class="foodName">{{goods.goodsName}}</span>
+                  <span class="foodPrice">￥{{goods.price}}元</span>
+                </li>
+              </ul>
+            </el-tab-pane>
+            <el-tab-pane label="小食">
+              <ul class='cookList'>
+                <li v-for="goods in type1Goods">
+                  <span class="foodImg">
+                      <img :src="goods.goodsImg" width="100%">
+                  </span>
+                  <span class="foodName">{{goods.goodsName}}</span>
+                  <span class="foodPrice">￥{{goods.price}}元</span>
+                </li>
+              </ul>
+            </el-tab-pane>
+            <el-tab-pane label="饮料">
+              <ul class='cookList'>
+                <li v-for="goods in type2Goods">
+                  <span class="foodImg">
+                      <img :src="goods.goodsImg" width="100%">
+                  </span>
+                  <span class="foodName">{{goods.goodsName}}</span>
+                  <span class="foodPrice">￥{{goods.price}}元</span>
+                </li>
+              </ul>
+            </el-tab-pane>
+            <el-tab-pane label="套餐">
+              <ul class='cookList'>
+                <li v-for="goods in type3Goods">
+                  <span class="foodImg">
+                      <img :src="goods.goodsImg" width="100%">
+                  </span>
+                  <span class="foodName">{{goods.goodsName}}</span>
+                  <span class="foodPrice">￥{{goods.price}}元</span>
+                </li>
+              </ul>
+            </el-tab-pane>
+
+          </el-tabs>
+        </div>
       </el-col>
     </el-row>
   </div>
@@ -40,6 +101,7 @@
 
 <script>
   import $ from 'jquery'
+  import axios from 'axios'
 
   export default {
     data() {
@@ -60,12 +122,45 @@
           goodsName: '甜筒',
           price: 8,
           count: 1
-        }]
+        }],
+        oftenGoods: [],
+        type0Goods: [],
+        type1Goods: [],
+        type2Goods: [],
+        type3Goods: []
       }
     },
     mounted() {
       let orderHeight = document.body.clientHeight
       $('#order-list').height(`${orderHeight}px`)
+    },
+    created() {
+      this._getOftenGoods()
+      this._getTypeGoods()
+    },
+    methods: {
+      _getOftenGoods() {
+        axios.get('http://jspang.com/DemoApi/oftenGoods.php')
+          .then(response => {
+            this.oftenGoods = response.data
+          })
+          .catch(error => {
+            alert('网络错误，不能访问' + error)
+          })
+      },
+      _getTypeGoods() {
+        //读取分类商品列表
+        axios.get('http://jspang.com/DemoApi/typeGoods.php')
+          .then(response => {
+            this.type0Goods = response.data[0]
+            this.type1Goods = response.data[1]
+            this.type2Goods = response.data[2]
+            this.type3Goods = response.data[3]
+          })
+          .catch(error => {
+            alert('网络错误，不能访问' + error)
+          })
+      }
     }
   }
 </script>
@@ -78,5 +173,88 @@
 
     background-color: #F9FAFC;
     border-right: 1px solid #C0CCDA;
+  }
+
+  .order-btn {
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  .title {
+    height: 20px;
+    border-bottom: 1px solid #D3DCE6;
+    background-color: #F9FAFC;
+    padding: 10px;
+  }
+
+  .often-goods-list ul li {
+    list-style: none;
+    float: left;
+    border: 1px solid #E5E9F2;
+    padding: 10px;
+    margin: 5px;
+    background-color: #fff;
+    cursor: pointer;
+  }
+
+  .goods-type {
+    clear: both;
+  }
+
+  .o-price {
+    color: #58B7FF;
+  }
+
+  .often-goods-list {
+    border-bottom: 1px solid #C0CCDA;
+    height: auto;
+    overflow: hidden;
+    padding-bottom: 10px;
+    background-color: #F9FAFC;
+  }
+
+  .cookList li {
+    list-style: none;
+    width: 23%;
+    border: 1px solid #E5E9F2;
+    height: auto;
+    overflow: hidden;
+    background-color: #fff;
+    padding: 2px;
+    float: left;
+    margin: 2px;
+    cursor: pointer;
+  }
+
+  .cookList li span {
+
+    display: block;
+    float: left;
+  }
+
+  .foodImg {
+    width: 40%;
+  }
+
+  .foodName {
+    font-size: 18px;
+    padding-left: 10px;
+    color: brown;
+  }
+
+  .foodPrice {
+    font-size: 16px;
+    padding-left: 10px;
+    padding-top: 10px;
+  }
+
+  .totalDiv {
+    height: auto;
+    overflow: hidden;
+    text-align: right;
+    font-size: 16px;
+    background-color: #fff;
+    border-bottom: 1px solid #E5E9F2;
+    padding: 10px;
   }
 </style>
