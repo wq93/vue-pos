@@ -23,3 +23,14 @@
 * 重新生成在线链接。（这部很重要）
 * 在项目主页中(index.html)，更换css引入链接。
 ---
+### 解决100%高的问题
+
+- 在页面中使用了Element组件，这样他会自动给我们生产虚拟DOM，我们无法设置高度100%；
+
+- 这时候可以利用javascript，来设置100%高度问题。先要给我们的<el-col>标签上添加一个id，我们这里把ID设置为order-list。然后在vue构造器里使用mounted钩子函数来设置高度。
+```
+  mounted:function(){
+      var orderHeight=document.body.clientHeight;
+      document.getElementById("order-list").style.height=orderHeight+'px';
+  },
+```
