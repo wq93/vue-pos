@@ -25,7 +25,7 @@
             <div class="div-btn">
               <div class="order-btn">
                 <el-button type="warning" size="small" @click="checkout">挂单</el-button>
-                <el-button type="danger" size="small" @click="delAllGoods">清空</el-button>
+                <el-button type="danger" size="small" @click="delAllGoodsIsOk">清空</el-button>
                 <el-button type="success" size="small" @click="checkout">结账</el-button>
               </div>
             </div>
@@ -195,6 +195,27 @@
             this.totalMoney = this.totalMoney + (element.price * element.count)
           })
         }
+      },
+      delAllGoodsIsOk() {
+        if (!this.tableData.length) {
+          return
+        }
+        this.$confirm('清空将无法享用美食哦, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '清空成功!'
+          });
+          this.delAllGoods()
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消清空'
+          });
+        });
       },
       delAllGoods() {
         this.tableData = []
