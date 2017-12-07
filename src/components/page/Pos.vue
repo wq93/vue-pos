@@ -11,11 +11,17 @@
               <el-table-column prop="price" label="金额" width="70"></el-table-column>
               <el-table-column label="操作" width="100" fixed="right">
                 <template scope="scope">
-                  <el-button type="text" size="small">删除</el-button>
-                  <el-button type="text" size="small">增加</el-button>
+                  <el-button type="text" size="small" @click="delSingleGoods(scope.row)">删除</el-button>
+                  <el-button type="text" size="small" @click="addOrderList(scope.row)">增加</el-button>
                 </template>
               </el-table-column>
             </el-table>
+            <div class="totalDiv">
+              <small>数量：</small>
+              <strong>{{totalCount}}</strong> &nbsp;&nbsp;&nbsp;&nbsp;
+              <small>总计：</small>
+              <strong>{{totalMoney}}</strong> 元
+            </div>
             <div class="div-btn">
               <div class="order-btn">
                 <el-button type="warning" size="small">挂单</el-button>
@@ -38,7 +44,7 @@
           <div class="title">常用商品</div>
           <div class="often-goods-list">
             <ul>
-              <li v-for="item in oftenGoods">
+              <li v-for="item in oftenGoods" @click="addOrderList(item)">
                 <span>{{item.goodsName}}</span>
                 <span class="o-price">￥{{item.price}}元</span>
               </li>
@@ -49,7 +55,7 @@
           <el-tabs>
             <el-tab-pane label="汉堡">
               <ul class='cookList'>
-                <li v-for="goods in type0Goods">
+                <li v-for="goods in type0Goods" @click="addOrderList(goods)">
                   <span class="foodImg">
                       <img :src="goods.goodsImg" width="100%">
                   </span>
@@ -60,7 +66,7 @@
             </el-tab-pane>
             <el-tab-pane label="小食">
               <ul class='cookList'>
-                <li v-for="goods in type1Goods">
+                <li v-for="goods in type1Goods" @click="addOrderList(goods)">
                   <span class="foodImg">
                       <img :src="goods.goodsImg" width="100%">
                   </span>
@@ -71,7 +77,7 @@
             </el-tab-pane>
             <el-tab-pane label="饮料">
               <ul class='cookList'>
-                <li v-for="goods in type2Goods">
+                <li v-for="goods in type2Goods" @click="addOrderList(goods)">
                   <span class="foodImg">
                       <img :src="goods.goodsImg" width="100%">
                   </span>
@@ -82,7 +88,7 @@
             </el-tab-pane>
             <el-tab-pane label="套餐">
               <ul class='cookList'>
-                <li v-for="goods in type3Goods">
+                <li v-for="goods in type3Goods" @click="addOrderList(goods)">
                   <span class="foodImg">
                       <img :src="goods.goodsImg" width="100%">
                   </span>
@@ -106,28 +112,14 @@
   export default {
     data() {
       return {
-        tableData: [{
-          goodsName: '可口可乐',
-          price: 8,
-          count: 1
-        }, {
-          goodsName: '香辣鸡腿堡',
-          price: 15,
-          count: 1
-        }, {
-          goodsName: '爱心薯条',
-          price: 8,
-          count: 1
-        }, {
-          goodsName: '甜筒',
-          price: 8,
-          count: 1
-        }],
+        tableData: [],
         oftenGoods: [],
         type0Goods: [],
         type1Goods: [],
         type2Goods: [],
-        type3Goods: []
+        type3Goods: [],
+        totalMoney: 0, // 订单总价格
+        totalCount: 0  // 订单商品总数量
       }
     },
     mounted() {
@@ -149,7 +141,7 @@
           })
       },
       _getTypeGoods() {
-        //读取分类商品列表
+        // 读取分类商品列表
         axios.get('http://jspang.com/DemoApi/typeGoods.php')
           .then(response => {
             this.type0Goods = response.data[0]
@@ -160,6 +152,44 @@
           .catch(error => {
             alert('网络错误，不能访问' + error)
           })
+      },
+      addOrderList(goods) {
+        let isHave = false
+        // 判断是否这个商品已经存在于订单列表
+        $.each(this.tableData, (index, item) => {
+          if (item.goodsId === goods.goodsId) {
+            isHave = true // 存在
+          }
+        })
+        // 根据isHave的值判断订单列表中是否已经有此商品
+        if (isHave) {
+          let arr = this.tableData.filter(o => o.goodsId === goods.goodsId)
+          arr[0].count++
+        } else {
+          let newGoods = {
+            goodsId: goods.goodsId,
+            goodsName: goods.goodsName,
+            price: goods.price,
+            count: 1
+          }
+          this.tableData.push(newGoods)
+        }
+        this.getAllMoney()
+      },
+      delSingleGoods(goods) {
+        this.tableData = this.tableData.filter(o => o.goodsId !== goods.goodsId)
+        this.getAllMoney()
+      },
+      // 汇总数量和金额
+      getAllMoney() {
+        this.totalCount = 0
+        this.totalMoney = 0
+        if (this.tableData) {
+          this.tableData.forEach((element) => {
+            this.totalCount += element.count
+            this.totalMoney = this.totalMoney + (element.price * element.count)
+          })
+        }
       }
     }
   }
