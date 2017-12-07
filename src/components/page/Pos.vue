@@ -24,9 +24,9 @@
             </div>
             <div class="div-btn">
               <div class="order-btn">
-                <el-button type="warning" size="small">挂单</el-button>
-                <el-button type="danger" size="small">删除</el-button>
-                <el-button type="success" size="small">结账</el-button>
+                <el-button type="warning" size="small" @click="checkout">挂单</el-button>
+                <el-button type="danger" size="small" @click="delAllGoods">清空</el-button>
+                <el-button type="success" size="small" @click="checkout">结账</el-button>
               </div>
             </div>
           </el-tab-pane>
@@ -190,6 +190,31 @@
             this.totalMoney = this.totalMoney + (element.price * element.count)
           })
         }
+      },
+      delAllGoods() {
+        this.tableData = []
+        this.totalCount = 0
+        this.totalMoney = 0
+      },
+      checkout() {
+        if (this.totalCount != 0) {
+          this.tableData = []
+          this.totalCount = 0
+          this.totalMoney = 0
+          this.$message({
+            message: '结账成功，感谢你又为店里出了一份力!',
+            type: 'success'
+          })
+
+        } else {
+          this.$message.error('不能空结。老板了解你急切的心情！')
+        }
+
+      }
+    },
+    watch: {
+      tableData() {
+        return
       }
     }
   }
