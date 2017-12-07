@@ -108,6 +108,7 @@
 <script>
   import $ from 'jquery'
   import axios from 'axios'
+  import storage from 'good-storage'
 
   export default {
     data() {
@@ -123,6 +124,9 @@
       }
     },
     mounted() {
+      let tableData = storage.get('tableData')
+      this.tableData = tableData
+      this.getAllMoney()
       let orderHeight = document.body.clientHeight
       $('#order-list').height(`${orderHeight}px`)
     },
@@ -165,6 +169,7 @@
         if (isHave) {
           let arr = this.tableData.filter(o => o.goodsId === goods.goodsId)
           arr[0].count++
+          storage.set('tableData', this.tableData)
         } else {
           let newGoods = {
             goodsId: goods.goodsId,
@@ -197,7 +202,7 @@
         this.totalMoney = 0
       },
       checkout() {
-        if (this.totalCount != 0) {
+        if (this.totalCount !== 0) {
           this.tableData = []
           this.totalCount = 0
           this.totalMoney = 0
@@ -205,16 +210,15 @@
             message: '结账成功，感谢你又为店里出了一份力!',
             type: 'success'
           })
-
         } else {
           this.$message.error('不能空结。老板了解你急切的心情！')
         }
-
       }
     },
     watch: {
-      tableData() {
-        return
+      tableData(newList) {
+        console.log('变化了')
+        storage.set('tableData', newList)
       }
     }
   }
